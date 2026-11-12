@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- custom -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Piggy ($PIGGY) on Solana</title>
+<meta name="description" content="A very relaxed pig in a purple camo hoodie. Oinking since the cave walls.">
+<meta property="og:title" content="Piggy ($PIGGY)">
+<meta property="og:description" content="A very relaxed pig in a purple camo hoodie. Oinking since the cave walls.">
+<meta property="og:image" content="banner.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cave:#160f14;--cave2:#2a1a1f;--ochre:#c9782f;--ochre2:#e4a35a;--ash:#8d7a6a;
+  --purple:#B565DB;--deep:#1E0A2B;--plum:#3a1250;--pink:#FFB6D3;--cream:#F3E2FF;--gold:#f2c14e;--gold2:#b8860b;
+  --ease:cubic-bezier(.22,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Fredoka,system-ui,sans-serif;color:var(--cream);background:var(--deep);overflow-x:hidden;line-height:1.5}
+h1,h2,h3,.disp{font-family:Chewy,Fredoka,cursive;font-weight:400;letter-spacing:.01em}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+.wrap{width:min(1100px,92vw);margin:0 auto}
+section{position:relative}
+
+/* ---------- CAVE ---------- */
+#cave{min-height:min(100svh,960px);background:radial-gradient(120% 90% at 50% 110%,#3a2630 0%,var(--cave2) 35%,var(--cave) 75%);overflow:hidden;display:grid;place-items:center;text-align:center;padding:6rem 0 12rem}
+#cave::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(circle at 20% 30%,rgba(255,255,255,.04),transparent 35%),
+  radial-gradient(circle at 80% 70%,rgba(255,255,255,.035),transparent 30%),
+  repeating-radial-gradient(circle at 50% 50%,transparent 0 14px,rgba(0,0,0,.08) 15px 16px);pointer-events:none;mix-blend-mode:overlay}
+.torch{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(420px 420px at var(--tx,50%) var(--ty,40%),rgba(255,170,80,.22),rgba(255,120,40,.07) 40%,transparent 70%);transition:background-position .1s}
+.layer{position:absolute;inset:-10% 0;pointer-events:none;will-change:transform}
+.layer svg{position:absolute;overflow:visible}
+.l-far{opacity:.35;filter:blur(.6px)}
+.l-mid{opacity:.7}
+.l-near{opacity:.95}
+.cave-content{position:relative;z-index:3;max-width:820px;padding:0 1rem}
+.cave-content .stone{display:inline-block;font-size:.9rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ochre2);border:2px dashed rgba(201,120,47,.5);padding:.4rem 1rem;border-radius:999px;margin-bottom:1.2rem}
+.cave-content h1{font-size:clamp(4.5rem,15vw,11rem);line-height:.9;color:var(--ochre2);text-shadow:0 0 30px rgba(228,163,90,.25),4px 4px 0 #5a3418}
+.cave-content h1 small{display:block;font-size:.28em;color:var(--ochre);letter-spacing:.2em}
+.cave-content p{margin:1.4rem auto 2rem;font-size:clamp(1.1rem,2.2vw,1.45rem);color:#d9c6b3;max-width:600px}
+.cave-pig{width:min(260px,55vw);margin:0 auto 1.5rem;border-radius:50%;overflow:hidden;border:6px solid rgba(201,120,47,.55);box-shadow:0 0 0 10px rgba(0,0,0,.35),0 30px 60px rgba(0,0,0,.6);filter:sepia(.9) contrast(1.1) brightness(.85);transition:filter .6s var(--ease)}
+.cave-pig:hover{filter:none}
+.btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.7rem;border-radius:999px;font-weight:700;text-decoration:none;font-size:1.05rem;transition:transform .35s var(--ease),box-shadow .35s var(--ease);border:0;cursor:pointer;font-family:inherit}
+.btn:hover{transform:translateY(-3px)}
+.btn-ochre{background:var(--ochre);color:#1a0f08;box-shadow:0 10px 25px rgba(201,120,47,.3)}
+.btn-ghost{background:transparent;color:var(--ochre2);border:2px solid var(--ochre)}
+.btn-gold{background:linear-gradient(135deg,#ffe28a,#d9a62e 55%,#f5d879);color:#2a1a05;box-shadow:0 12px 30px rgba(242,193,78,.35)}
+.btn-pink{background:var(--pink);color:var(--deep);box-shadow:0 12px 30px rgba(255,182,211,.3)}
+.scroll-hint{position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);z-index:3;color:var(--ash);font-size:.85rem;letter-spacing:.25em;text-transform:uppercase}
+.scroll-hint::after{content:"";display:block;width:2px;height:40px;margin:.6rem auto 0;background:linear-gradient(var(--ochre),transparent);animation:drop 1.8s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- RISE (jagged transition) ---------- */
+#rise{margin-top:-140px;position:relative;z-index:4;background:linear-gradient(180deg,var(--plum),#5a1f80 40%,var(--purple));clip-path:polygon(0 110px,6% 60px,13% 120px,21% 30px,30% 95px,38% 40px,47% 110px,55% 20px,63% 90px,71% 35px,80% 115px,88% 45px,95% 100px,100% 30px,100% 100%,0 100%);padding:12rem 0 6rem;overflow:hidden}
+
+/* coins */
+.coins{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.coin{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#f2c14e 40%,#b8860b 75%,#7a5607);box-shadow:inset -3px -4px 8px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.35);display:grid;place-items:center;font-family:Chewy,cursive;color:#6b4a06;animation:bob var(--d,6s) ease-in-out infinite alternate;will-change:transform}
+.coin::after{content:"P"}
+.coin.s{width:26px;height:26px;font-size:14px;filter:blur(1px);opacity:.6}
+.coin.m{width:46px;height:46px;font-size:24px}
+.coin.l{width:84px;height:84px;font-size:46px;box-shadow:inset -5px -7px 12px rgba(0,0,0,.35),0 20px 40px rgba(0,0,0,.45)}
+@keyframes bob{from{margin-top:0;rotate:-6deg}to{margin-top:28px;rotate:8deg}}
+
+/* penthouse hero */
+.pent{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;position:relative;z-index:2}
+.pent h2{font-size:clamp(3rem,7vw,5.6rem);line-height:.95;color:#fff;text-shadow:0 6px 0 rgba(30,10,43,.35)}
+.pent h2 em{font-style:normal;background:linear-gradient(90deg,#ffe28a,#ffb347,#ffe28a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pent .lead{font-size:1.2rem;color:var(--cream);margin:1rem 0 1.6rem;max-width:520px}
+.frame{perspective:1200px}
+.frame-inner{position:relative;border:10px solid transparent;border-image:linear-gradient(135deg,#ffe28a,#b8860b 40%,#ffe9a8 60%,#8a6508) 1;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 6px #2a1a05 inset;transform-style:preserve-3d;transition:transform .6s var(--ease);will-change:transform;background:#2a1a05}
+.frame-inner img{aspect-ratio:1;object-fit:cover}
+.frame-inner::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.18),transparent 40%);pointer-events:none}
+.plaque{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%) translateZ(40px);background:linear-gradient(#ffe28a,#c9961a);color:#2a1a05;font-family:Chewy;padding:.35rem 1.2rem;border-radius:6px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.4);font-size:1.05rem}
+
+/* CA */
+.ca{margin-top:2rem;background:rgba(30,10,43,.55);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:1rem 1.2rem;backdrop-filter:blur(8px)}
+.ca label{display:block;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:var(--pink);margin-bottom:.4rem}
+.ca-row{display:flex;gap:.6rem;align-items:center}
+.ca code{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:.95rem;word-break:break-all;color:#fff}
+.ca button{background:var(--gold);color:#2a1a05;border:0;border-radius:10px;padding:.6rem 1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .3s var(--ease)}
+.ca button:hover{transform:scale(1.05)}
+
+/* ---------- LORE ---------- */
+#lore{background:var(--purple);padding:6rem 0;overflow:hidden}
+#lore .wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start}
+.sticky{position:sticky;top:6rem}
+.sticky img{border-radius:30px;box-shadow:0 30px 60px rgba(30,10,43,.4),0 0 0 8px rgba(255,255,255,.25)}
+#lore h2{font-size:clamp(2.6rem,5vw,4.2rem);color:var(--deep);line-height:1}
+#lore h2 span{display:block;font-family:Fredoka;font-size:.9rem;letter-spacing:.3em;text-transform:uppercase;color:var(--plum);margin-bottom:.6rem}
+.lore-p{font-size:1.25rem;color:var(--deep);margin-top:1.4rem;padding-left:1.4rem;border-left:5px solid var(--pink)}
+.lore-p:first-of-type::first-letter{font-family:Chewy;font-size:3em;line-height:.8;float:left;margin:.1em .12em 0 0;color:var(--plum)}
+.oink-row{margin-top:2.5rem;display:flex;gap:.7rem;flex-wrap:wrap}
+.oink{background:var(--cream);color:var(--deep);padding:.5rem 1rem;border-radius:999px;font-weight:600;font-size:.95rem}
+
+/* ---------- FLOORS (how to buy) ---------- */
+#floors{background:linear-gradient(180deg,var(--purple),#7b2fa6 50%,var(--plum));padding:6rem 0;overflow:hidden}
+#floors h2{text-align:center;font-size:clamp(2.6rem,5vw,4.2rem);color:#fff;margin-bottom:.4rem}
+#floors .sub{text-align:center;color:var(--pink);margin-bottom:3rem;font-size:1.1rem}
+.elev{position:relative;max-width:820px;margin:0 auto}
+.elev::before{content:"";position:absolute;left:56px;top:0;bottom:0;width:6px;background:linear-gradient(var(--gold),var(--gold2));border-radius:3px}
+.floor{display:grid;grid-template-columns:120px 1fr;gap:1.5rem;align-items:center;margin-bottom:1.5rem;position:relative}
+.floor .num{width:118px;height:118px;border-radius:24px;background:linear-gradient(135deg,#ffe28a,#c9961a);color:#2a1a05;display:grid;place-items:center;font-family:Chewy;font-size:2rem;box-shadow:0 14px 30px rgba(0,0,0,.35);position:relative;z-index:1}
+.floor .num small{display:block;font-family:Fredoka;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;text-align:center}
+.floor .card{background:rgba(243,226,255,.95);color:var(--deep);border-radius:22px;padding:1.4rem 1.6rem;box-shadow:0 20px 40px rgba(30,10,43,.3)}
+.floor h3{font-size:1.6rem;color:var(--plum)}
+.floor p{margin-top:.3rem;font-size:1.05rem}
+
+/* ---------- TOKENOMICS ---------- */
+#toke{background:var(--plum);padding:6rem 0;overflow:hidden}
+#toke h2{font-size:clamp(2.6rem,5vw,4.2rem);text-align:center;color:var(--pink);margin-bottom:2.5rem}
+.plaques{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.3rem}
+.plaque2{background:linear-gradient(160deg,#fff1bf,#e4b94a 45%,#fff3c4 55%,#c9961a);color:#2a1a05;border-radius:16px;padding:1.5rem;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.4),inset 0 0 0 3px rgba(255,255,255,.4),inset 0 0 0 6px #9a7210;transition:transform .5s var(--ease)}
+.plaque2:hover{transform:translateY(-6px) rotate(-1deg)}
+.plaque2 b{display:block;font-family:Fredoka;font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;opacity:.75}
+.plaque2 span{display:block;font-family:Chewy;font-size:1.5rem;margin-top:.4rem;line-height:1.15}
+
+/* ---------- VIDEO + MEMES ---------- */
+#vault{background:linear-gradient(180deg,var(--plum),var(--deep));padding:6rem 0 5rem;overflow:hidden}
+#vault h2{font-size:clamp(2.6rem,5vw,4.2rem);color:#fff;text-align:center}
+#vault .sub{text-align:center;color:var(--pink);margin-bottom:2.5rem}
+.video{max-width:760px;margin:0 auto 4rem;border-radius:24px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 6px var(--gold2);background:#000}
+.video video{width:100%;display:block}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.4rem}
+.gallery figure{border:8px solid transparent;border-image:linear-gradient(135deg,#ffe28a,#b8860b 45%,#ffe9a8 55%,#8a6508) 1;background:#1a0f08;box-shadow:0 20px 40px rgba(0,0,0,.5);transition:transform .5s var(--ease);overflow:hidden}
+.gallery figure:nth-child(3n+2){transform:rotate(1.2deg)}
+.gallery figure:nth-child(3n){transform:rotate(-1deg)}
+.gallery figure:hover{transform:scale(1.04) rotate(0)}
+.gallery img{aspect-ratio:1;object-fit:cover;width:100%}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--deep);padding:3rem 0 2.5rem;border-top:1px solid rgba(255,255,255,.1)}
+.socials{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.6rem}
+.pill{padding:.55rem 1.2rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,182,211,.35);text-decoration:none;font-weight:600;transition:background .3s}
+.pill:hover{background:var(--pink);color:var(--deep)}
+.disc{max-width:760px;margin:0 auto;text-align:center;font-size:.85rem;color:#b9a3c9}
+.foot-brand{text-align:center;font-family:Chewy;font-size:1.6rem;color:var(--pink);margin-bottom:1rem}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:860px){
+  .pent,#lore .wrap{grid-template-columns:1fr}
+  .sticky{position:static;max-width:360px;margin:0 auto}
+  .floor{grid-template-columns:80px 1fr;gap:1rem}
+  .floor .num{width:78px;height:78px;font-size:1.4rem;border-radius:18px}
+  .elev::before{left:36px}
+  #rise{margin-top:-90px;padding-top:9rem}
+  .frame{max-width:420px;margin:0 auto}
+}
+@media (prefers-reduced-motion:reduce){
+  .coin,.scroll-hint::after{animation:none}
+  .rv{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= CAVE ================= -->
+<section id="cave">
+  <div class="layer l-far" data-px="0.08">
+    <svg width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#c9782f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+      <g opacity=".7" transform="translate(120 160) scale(1.6)">
+        <path d="M20 60q10-40 60-40q40 0 50 30l15-10l-5 20q5 20-20 30v15h-10v-12h-40v12h-10v-15q-45-5-40-30z"/>
+        <circle cx="105" cy="40" r="3" fill="#c9782f"/>
+      </g>
+      <g transform="translate(1050 120) scale(1.3)" opacity=".6">
+        <path d="M30 95l-6-55q2-12 8-6l6 40l2-62q4-10 9-2l1 60l10-66q6-10 10 0l-4 64l14-50q7-8 9 2l-14 70q-8 40-45 20z"/>
+      </g>
+      <g stroke="#8d7a6a" opacity=".6"><path d="M200 700l40-30 40 30 40-30 40 30 40-30 40 30"/><path d="M900 760l40-30 40 30 40-30 40 30"/></g>
+      <g fill="#c9782f" stroke="none" opacity=".5"><circle cx="300" cy="420" r="5"/><circle cx="330" cy="430" r="5"/><circle cx="360" cy="425" r="5"/><circle cx="390" cy="440" r="5"/><circle cx="420" cy="430" r="5"/><circle cx="1100" cy="620" r="6"/><circle cx="1130" cy="640" r="6"/><circle cx="1160" cy="615" r="6"/></g>
+    </svg>
+  </div>
+  <div class="layer l-mid" data-px="0.2">
+    <svg width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#e4a35a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(60 520) scale(1.9) rotate(-8)" opacity=".8">
+        <path d="M20 60q10-40 60-40q40 0 50 30l15-10l-5 20q5 20-20 30v15h-10v-12h-40v12h-10v-15q-45-5-40-30z"/>
+        <path d="M75 45q8-6 14 0"/>
+      </g>
+      <g transform="translate(1120 560) scale(1.5) rotate(10)" opacity=".7">
+        <path d="M20 60q10-40 60-40q40 0 50 30l15-10l-5 20q5 20-20 30v15h-10v-12h-40v12h-10v-15q-45-5-40-30z"/>
+      </g>
+      <g stroke="#c9782f" opacity=".7"><path d="M650 80l30 40-30 40 30 40"/><path d="M720 70l30 40-30 40 30 40"/></g>
+      <g stroke="#8d7a6a" opacity=".55" stroke-width="3"><path d="M250 250c40-60 110-70 160-20"/><path d="M960 300c40-60 110-70 160-20"/></g>
+    </svg>
+  </div>
+  <div class="layer l-near" data-px="0.38">
+    <svg width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#e4a35a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="translate(1180 230) scale(1.1)" opacity=".85">
+        <path d="M30 95l-6-55q2-12 8-6l6 40l2-62q4-10 9-2l1 60l10-66q6-10 10 0l-4 64l14-50q7-8 9 2l-14 70q-8 40-45 20z"/>
+      </g>
+      <g transform="translate(90 90) scale(.9) rotate(15)" opacity=".8">
+        <path d="M30 95l-6-55q2-12 8-6l6 40l2-62q4-10 9-2l1 60l10-66q6-10 10 0l-4 64l14-50q7-8 9 2l-14 70q-8 40-45 20z"/>
+      </g>
+      <g fill="#e4a35a" stroke="none" opacity=".8"><circle cx="160" cy="760" r="8"/><circle cx="200" cy="790" r="8"/><circle cx="240" cy="765" r="8"/><circle cx="1180" cy="820" r="8"/><circle cx="1230" cy="800" r="8"/></g>
+      <text x="620" y="840" font-family="Chewy,cursive" font-size="46" fill="#c9782f" stroke="none" opacity=".7" transform="rotate(-6 620 840)">oink</text>
+    </svg>
+  </div>
+  <div class="torch" id="torch"></div>
+
+  <div class="cave-content">
+    <span class="stone">45,000 years of pig memes</span>
+    <div class="cave-pig" data-tilt><img src="logo.png" alt="Piggy in a purple camo hoodie" width="1000" height="1000"></div>
+    <h1>PIGGY<small>$PIGGY on Solana</small></h1>
+    <p>A very relaxed pig in a purple camo hoodie. Oinking since the cave walls.</p>
+    <div class="btns">
+      <a class="btn btn-ochre" href="#rise">Leave the cave &darr;</a>
+      
+    </div>
+  </div>
+  <div class="scroll-hint">scroll up to the penthouse</div>
+</section>
+
+<!-- ================= PENTHOUSE ================= -->
+<section id="rise">
+  <div class="coins" aria-hidden="true">
+    <div class="layer" data-px="-0.08">
+      <div class="coin s" style="left:6%;top:12%;--d:7s"></div><div class="coin s" style="left:22%;top:60%;--d:5s"></div><div class="coin s" style="left:48%;top:20%;--d:6s"></div><div class="coin s" style="left:70%;top:75%;--d:8s"></div><div class="coin s" style="left:90%;top:35%;--d:5.5s"></div><div class="coin s" style="left:35%;top:88%;--d:6.5s"></div>
+    </div>
+    <div class="layer" data-px="-0.2">
+      <div class="coin m" style="left:12%;top:30%;--d:6s"></div><div class="coin m" style="left:40%;top:8%;--d:7s"></div><div class="coin m" style="left:82%;top:18%;--d:5s"></div><div class="coin m" style="left:60%;top:65%;--d:8s"></div><div class="coin m" style="left:28%;top:78%;--d:6.5s"></div>
+    </div>
+    <div class="layer" data-px="-0.42" data-mouse="18">
+      <div class="coin l" style="left:3%;top:50%;--d:7s"></div><div class="coin l" style="left:52%;top:4%;--d:6s"></div><div class="coin l" style="left:88%;top:62%;--d:8s"></div><div class="coin l" style="left:20%;top:92%;--d:5s"></div>
+    </div>
+  </div>
+
+  <div class="wrap pent">
+    <div class="rv">
+      <h2>From the cave<br>to the <em>penthouse</em>.</h2>
+      <p class="lead">Half-closed eyes, purple camo hoodie, permanently unbothered. He counts his oinks, not his losses.</p>
+      <div class="btns" style="justify-content:flex-start">
+        <a class="btn btn-gold" href="#" target="_blank" rel="noopener">Buy $PIGGY on pump.fun</a>
+        
+      </div>
+      <div class="ca">
+        <label>Contract address</label>
+        <div class="ca-row"><code id="ca">Contract address revealed at launch</code><button id="copy" type="button">Copy</button></div>
+      </div>
+    </div>
+    <div class="frame rv">
+      <div class="frame-inner" id="tilt">
+        <img src="hero.png" alt="Piggy counting cash in his penthouse" width="1100" height="1100">
+        <div class="plaque">Ser Piggy, est. cave era</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LORE ================= -->
+<section id="lore">
+  <div class="wrap">
+    <div class="sticky rv"><img src="logo.png" alt="Piggy portrait" width="1000" height="1000" data-px="0.06"></div>
+    <div>
+      <h2 class="rv"><span>Lore</span>The oldest meme</h2>
+      <p class="lore-p rv">Some of the oldest known figurative art on Earth is a painting of a pig on a cave wall in Sulawesi, Indonesia. Pigs have been memes for a long, long time.</p>
+      <p class="lore-p rv">Piggy is the modern descendant: half-closed eyes, purple camo hoodie, permanently unbothered. He counts his oinks, not his losses.</p>
+      <p class="lore-p rv">No roadmap, no VC, no team bag. Just a smug pig and a pen full of people making memes.</p>
+      <div class="oink-row rv"><span class="oink">oink.</span><span class="oink">hoodies up</span><span class="oink">this little piggy went to pump.fun</span><span class="oink">gm to the pen</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW TO BUY ================= -->
+<section id="floors">
+  <div class="wrap">
+    <h2 class="rv">Take the elevator</h2>
+    <p class="sub rv">Four floors between you and the pen.</p>
+    <div class="elev">
+      <div class="floor rv"><div class="num"><small>floor</small>B1</div><div class="card"><h3>Get a wallet</h3><p>Install Phantom or Solflare. Write down the seed phrase somewhere a pig can't eat it.</p></div></div>
+      <div class="floor rv"><div class="num"><small>floor</small>02</div><div class="card"><h3>Load some SOL</h3><p>Buy SOL on an exchange and send it to your new wallet address.</p></div></div>
+      <div class="floor rv"><div class="num"><small>floor</small>03</div><div class="card"><h3>Open pump.fun</h3><p>Connect your wallet and search for $PIGGY. Match the contract address against the one in the pen.</p></div></div>
+      <div class="floor rv"><div class="num"><small>floor</small>PH</div><div class="card"><h3>Swap</h3><p>Enter the amount of SOL, confirm the swap, and welcome to the penthouse. Oink.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TOKENOMICS ================= -->
+<section id="toke">
+  <div class="wrap">
+    <h2 class="rv">Pignomics</h2>
+    <div class="plaques">
+      <div class="plaque2 rv"><b>Supply</b><span>1,000,000,000</span></div>
+      <div class="plaque2 rv"><b>Launch</b><span>Fair launch on pump.fun</span></div>
+      <div class="plaque2 rv"><b>Tax</b><span>0% buy / 0% sell</span></div>
+      <div class="plaque2 rv"><b>Liquidity</b><span>Auto-migrated &amp; burned by pump.fun</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VAULT ================= -->
+<section id="vault">
+  <div class="wrap">
+    <h2 class="rv">Welcome to the pen</h2>
+    <p class="sub rv">Fresh from the gallery wall.</p>
+    <div class="video rv"><video src="clip.mp4" controls muted loop playsinline></video></div>
+    <div class="gallery">
+      <figure class="rv"><img loading="lazy" src="meme_01.jpg" alt="Piggy meme 1"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_02.jpg" alt="Piggy meme 2"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_03.jpg" alt="Piggy meme 3"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_04.jpg" alt="Piggy meme 4"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_05.jpg" alt="Piggy meme 5"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_06.jpg" alt="Piggy meme 6"></figure>
+      <figure class="rv"><img loading="lazy" src="meme_07.jpg" alt="Piggy meme 7"></figure>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-brand">$PIGGY</div>
+    <div class="socials">
+      <a class="pill" href="#" target="_blank" rel="noopener">X / Twitter</a>
+      
+      <a class="pill" href="#" target="_blank" rel="noopener">pump.fun</a>
+      <a class="pill" href="#" target="_blank" rel="noopener">DEX Screener</a>
+    </div>
+    <p class="disc">$PIGGY is a memecoin with no intrinsic value or expectation of financial return. It is not affiliated with, endorsed by, or connected to any person, brand or company referenced in its memes. There is no team roadmap or promise of profit. Crypto is volatile; only spend what you can afford to lose.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* copy CA */
+  var copyBtn=document.getElementById('copy'), ca=document.getElementById('ca');
+  var CA='';
+  copyBtn.addEventListener('click',function(){
+    if(!CA){copyBtn.textContent='Soon';setTimeout(function(){copyBtn.textContent='Copy'},1400);return}
+    try{ navigator.clipboard.writeText(CA).then(function(){copyBtn.textContent='Copied!';setTimeout(function(){copyBtn.textContent='Copy'},1400)}).catch(function(){copyBtn.textContent='Select it'}) }
+    catch(e){ copyBtn.textContent='Select it' }
+  });
+
+  /* reveal */
+  var rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window && !RM){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    rv.forEach(function(el){io.observe(el)});
+  } else { rv.forEach(function(el){el.classList.add('in')}) }
+
+  if(RM) return;
+
+  /* parallax */
+  var items=[];
+  function collect(){
+    items=[];
+    document.querySelectorAll('[data-px]').forEach(function(el){
+      var sec=el.closest('section')||document.body;
+      items.push({el:el,speed:parseFloat(el.dataset.px),top:sec.getBoundingClientRect().top+window.scrollY,h:sec.offsetHeight,mouse:parseFloat(el.dataset.mouse||0)});
+    });
+  }
+  collect(); window.addEventListener('resize',collect);
+
+  var mx=0,my=0,tx=0,ty=0, vh=window.innerHeight;
+  var tilt=document.getElementById('tilt'), torch=document.getElementById('torch'), cavePig=document.querySelector('.cave-pig');
+  window.addEventListener('pointermove',function(e){
+    tx=(e.clientX/window.innerWidth-.5); ty=(e.clientY/window.innerHeight-.5);
+    torch.style.setProperty('--tx',(e.clientX/window.innerWidth*100)+'%');
+    torch.style.setProperty('--ty',(e.clientY/window.innerHeight*100)+'%');
+  },{passive:true});
+
+  var lastY=-1, ticking=false;
+  function frame(){
+    var y=window.scrollY; vh=window.innerHeight;
+    mx+=(tx-mx)*.06; my+=(ty-my)*.06;   /* luxurious easing */
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      if(it.top>y+vh*1.2||it.top+it.h<y-vh*.2) continue;
+      var rel=(y-it.top)*it.speed;
+      var mxo=it.mouse?mx*it.mouse:0, myo=it.mouse?my*it.mouse:0;
+      it.el.style.transform='translate3d('+mxo.toFixed(2)+'px,'+(rel+myo).toFixed(2)+'px,0)';
+    }
+    if(tilt){ tilt.style.transform='rotateY('+(mx*18).toFixed(2)+'deg) rotateX('+(-my*14).toFixed(2)+'deg)'; }
+    if(cavePig){ cavePig.style.transform='translate3d('+(mx*-24).toFixed(2)+'px,'+(my*-14).toFixed(2)+'px,0)'; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
